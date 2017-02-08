@@ -2,6 +2,7 @@ import React from 'react';
 import { Router, Route, hashHistory, IndexRedirect, Link } from 'react-router';
 import Songs from '../components/Songs';
 
+
 class Artist extends React.Component{
   constructor(props){
     super(props);
@@ -13,18 +14,40 @@ class Artist extends React.Component{
     const selectArtist = this.props.selectArtist;
 
     selectArtist(artistId);
-    console.log("selected artists: ", this.props.selectedArtist);
+    //console.log("selected artists: ", this.props.selectedArtist);
   }
 
   render(){
 
     const {info, songs, albums} = this.props.selectedArtist;
-    console.log("props.albums is: ", albums);
+    //console.log("props.albums is: ", albums);
 
       return (
         <div>
           <h3>{info.name}</h3>
-          <h4>ALBUMS</h4>
+          <ul className="nav nav-tabs">
+            <li><Link to={`/artists/${this.props.routeParams.artistId}/albums`}>ALBUMS</Link></li>
+            <li><Link to={`/artists/${this.props.routeParams.artistId}/songs`}>SONGS</Link></li>
+          </ul>
+
+          {
+
+          this.props.children ?
+          React.cloneElement(this.props.children, {
+            selectedAlbum: this.props.selectedAlbum,
+            currentSong: this.props.currentSong,
+            isPlaying: this.props.isPlaying,
+            toggleOne: this.props.toggleOne,
+            albums: this.props.albums,
+            selectAlbum: this.props.selectAlbum,
+            selectedArtist: this.props.selectedArtist,
+            selectArtist: this.props.selectArtist,
+            artists: this.props.artists,
+            //selectedArtist: this.selectArtist(this.props.routeParams.artistId)
+          }) : null
+        }
+
+          {/*<h4>ALBUMS</h4>
           <div className="row">
           {
             albums.map(album => (
@@ -42,6 +65,8 @@ class Artist extends React.Component{
             ))
           }
           </div>
+
+
           <h4>SONGS</h4>
           <div className="row">
             <Songs
@@ -49,7 +74,7 @@ class Artist extends React.Component{
             currentSong={this.props.currentSong}
             isPlaying={this.props.isPlaying}
             toggleOne={this.props.toggleOne} />
-            </div>
+            </div>*/}
         </div>
       );
     }

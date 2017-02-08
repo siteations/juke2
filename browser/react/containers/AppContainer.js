@@ -40,7 +40,7 @@ export default class AppContainer extends Component {
      axios.get('/api/artists/')
       .then(res => res.data)
       .then(artist => this.onLoadArtists(artist))
-      .then(artist => console.log("artist in axios: ", artist))
+      //.then(artist => console.log("artist in axios: ", artist))
       .catch(err => console.error(err));
 
     AUDIO.addEventListener('ended', () =>
@@ -132,7 +132,7 @@ export default class AppContainer extends Component {
       .then(res => res.data);
 
      Promise.all([artistAlbums, artistInfo, artistSongs]).spread((albums,info,songs) => {
-          console.log("info in promise is: ", info)
+          //console.log("info in promise is: ", info)
           albums = convertAlbums(albums);
           songs = songs.map(song => {
             return convertSong(song);
@@ -170,19 +170,6 @@ export default class AppContainer extends Component {
             artists: this.state.artists,
             //selectedArtist: this.selectArtist(this.props.routeParams.artistId)
           }) : null
-
-
-         /*} this.state.selectedAlbum.id ?
-          <Album
-            album={this.state.selectedAlbum}
-            currentSong={this.state.currentSong}
-            isPlaying={this.state.isPlaying}
-            toggleOne={this.toggleOne}
-          /> :
-          <Albums
-            albums={this.state.albums}
-            selectAlbum={this.selectAlbum}
-          />*/
         }
         </div>
         <Player
