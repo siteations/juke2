@@ -113,7 +113,7 @@ export default class AppContainer extends Component {
 
           this.props.children ?
           React.cloneElement(this.props.children, {
-            ablum: this.state.selectedAlbum,
+            selectedAlbum: this.state.selectedAlbum,
             currentSong: this.state.currentSong,
             isPlaying: this.state.isPlaying,
             toggleOne: this.toggleOne,

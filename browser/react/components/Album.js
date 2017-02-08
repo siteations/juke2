@@ -1,25 +1,28 @@
 import React from 'react';
 import Songs from '../components/Songs';
+import initialState from '../initialState';
 
 
 class Album extends React.Component{
   constructor(props){
     super(props);
-    this.state = {
-        selectedAlbum : {}
-    };
+
   }
 
   componentDidMount () {
-    const albumId = this.props.routeParams.albumId;
-    const selectAlbum = this.props.selectAlbum;
+      const albumId = this.props.routeParams.albumId;
+      const selectAlbum = this.props.selectAlbum;
 
-    selectAlbum(albumId);
+      selectAlbum(albumId);
   }
 
   render(){
 
-    console.log(this);
+    console.log("this: ", this);
+    console.log("props: ", this.props);
+
+    var album = this.props.selectedAlbum;
+
 
     return (
       <div className="album">
@@ -29,9 +32,9 @@ class Album extends React.Component{
         </div>
         <Songs
           songs={album.songs}
-          currentSong={currentSong}
-          isPlaying={isPlaying}
-          toggleOne={toggleOne} />
+          currentSong={this.props.currentSong}
+          isPlaying={this.props.isPlaying}
+          toggleOne={this.props.toggleOne} />
       </div>
     )
   }
