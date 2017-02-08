@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import bluebird from 'bluebird';
+const Promise = bluebird;
 
 import initialState from '../initialState';
 import AUDIO from '../audio';
@@ -8,8 +10,11 @@ import Albums from '../components/Albums.js';
 import Album from '../components/Album';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
+import Artists from "../components/Artists.js";
+import Artist from "../components/Artist.js";
 
-import { convertAlbum, convertAlbums, skip } from '../utils';
+
+import { convertSong, convertAlbum, convertAlbums, skip } from '../utils';
 
 export default class AppContainer extends Component {
 
@@ -23,12 +28,20 @@ export default class AppContainer extends Component {
     this.prev = this.prev.bind(this);
     this.selectAlbum = this.selectAlbum.bind(this);
     this.deselectAlbum = this.deselectAlbum.bind(this);
+    this.selectArtist = this.selectArtist.bind(this);
+    this.deselectArtist = this.deselectArtist.bind(this);
   }
 
   componentDidMount () {
     axios.get('/api/albums/')
       .then(res => res.data)
       .then(album => this.onLoad(convertAlbums(album)));
+
+     axios.get('/api/artists/')
+      .then(res => res.data)
+      .then(artist => this.onLoadArtists(artist))
+      .then(artist => console.log("artist in axios: ", artist))
+      .catch(err => console.error(err));
 
     AUDIO.addEventListener('ended', () =>
       this.next());
@@ -39,6 +52,12 @@ export default class AppContainer extends Component {
   onLoad (albums) {
     this.setState({
       albums: albums
+    });
+  }
+
+  onLoadArtists (artists){
+    this.setState({
+      artists: artists
     });
   }
 
@@ -102,6 +121,33 @@ export default class AppContainer extends Component {
     this.setState({ selectedAlbum: {}});
   }
 
+  selectArtist (artistId) {
+    let artistAlbums = axios.get(`/api/artists/${artistId}/albums`)
+      .then(res => res.data);
+
+    let artistInfo = axios.get(`/api/artists/${artistId}`)
+      .then(res => res.data);
+
+    let artistSongs = axios.get(`/api/artists/${artistId}/songs`)
+      .then(res => res.data);
+
+     Promise.all([artistAlbums, artistInfo, artistSongs]).spread((albums,info,songs) => {
+          console.log("info in promise is: ", info)
+          albums = convertAlbums(albums);
+          songs = songs.map(song => {
+            return convertSong(song);
+          });
+
+          return this.setState({
+          selectedArtist: {info, albums, songs}
+        })
+      });
+  }
+
+    deselectArtist () {
+      this.setState({ selectedArtist: {} });
+    }
+
   render () {
     return (
       <div id="main" className="container-fluid">
@@ -118,7 +164,11 @@ export default class AppContainer extends Component {
             isPlaying: this.state.isPlaying,
             toggleOne: this.toggleOne,
             albums: this.state.albums,
-            selectAlbum: this.selectAlbum
+            selectAlbum: this.selectAlbum,
+            selectedArtist: this.state.selectedArtist,
+            selectArtist: this.selectArtist,
+            artists: this.state.artists,
+            //selectedArtist: this.selectArtist(this.props.routeParams.artistId)
           }) : null
 
 

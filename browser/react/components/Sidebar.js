@@ -11,6 +11,9 @@ const Sidebar = (props) => {
       <section>
         <h4 className="menu-item active">
           <Link to="/albums">Go to Albums</Link>
+        </h4>
+        <h4 className="menu-item active">
+          <Link to="/artists">Go to Artists</Link>
           {/*<a href="#" onClick={deselectAlbum}>ALBUMS</a>*/}
         </h4>
       </section>
